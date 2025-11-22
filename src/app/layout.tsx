@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -9,8 +10,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Elo | Run The Game",
-  description: "New season innovation for the streets and the stadium.",
+  title: "Elo - Run The Game",
+  description: "Premium athletic wear for the modern athlete.",
 };
 
 export default function RootLayout({
@@ -21,10 +22,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${inter.variable} antialiased`}
+        className={`${inter.variable} font-sans antialiased bg-white text-black`}
       >
         <Navbar />
         {children}
+        <Footer />
       </body>
     </html>
   );

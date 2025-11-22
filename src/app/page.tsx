@@ -2,7 +2,9 @@ import Hero from "@/components/Hero";
 import Navbar from "@/components/Navbar";
 import TrendingSection from '@/components/TrendingSection';
 import CategoryGrid from '@/components/CategoryGrid';
-import StillInterestedSection from '@/components/StillInterestedSection';
+import PrimeBanner from '@/components/PrimeBanner';
+import PopularRightNow from '@/components/PopularRightNow';
+import RelatedResources from '@/components/RelatedResources';
 
 export default function Home() {
   return (
@@ -10,7 +12,9 @@ export default function Home() {
       <Hero />
       <TrendingSection />
       <CategoryGrid />
-      <StillInterestedSection />
+      <PrimeBanner />
+      <PopularRightNow />
+      <RelatedResources />
     </main>
   );
 }
