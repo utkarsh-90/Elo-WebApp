@@ -1,22 +1,25 @@
 'use client';
 
 import Link from 'next/link';
-import { Search, User, Heart, ShoppingBag, Menu, X, LogOut } from 'lucide-react';
+import { Search, User, Heart, ShoppingBag, Menu, X } from 'lucide-react';
 import { useState, useRef, useEffect } from 'react';
 import { createClient } from '@/lib/supabase/client';
 import { useRouter } from 'next/navigation';
 import MegaMenu from './MegaMenu';
 import SearchOverlay from './SearchOverlay';
+import { useFavorites } from '@/context/FavoritesContext';
+import { useCart } from '@/context/CartContext';
 
 export default function Navbar() {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
     const [activeCategory, setActiveCategory] = useState<string | null>(null);
     const [user, setUser] = useState<any>(null);
-    const [showUserMenu, setShowUserMenu] = useState(false);
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const closeTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const router = useRouter();
     const supabase = createClient();
+    const { favorites } = useFavorites();
+    const { getCartCount } = useCart();
 
     useEffect(() => {
         // Get initial session
@@ -33,12 +36,6 @@ export default function Navbar() {
 
         return () => subscription.unsubscribe();
     }, []);
-
-    const handleSignOut = async () => {
-        await supabase.auth.signOut();
-        setShowUserMenu(false);
-        router.refresh();
-    };
 
     const handleMouseEnter = (category: string) => {
         if (closeTimeoutRef.current) {
@@ -103,55 +100,47 @@ export default function Navbar() {
                             </div>
 
                             {/* Icons */}
-                            <div className="flex items-center space-x-4 md:space-x-6">
+                            {/* Icons */}
+                            <div className="flex items-center gap-4 md:gap-6">
                                 <button
                                     onClick={() => setIsSearchOpen(true)}
-                                    className="text-black hover:text-gray-600"
+                                    className="text-black hover:text-gray-600 p-2"
                                 >
                                     <Search size={20} />
                                 </button>
-                                <div className="relative">
-                                    {user ? (
-                                        <button
-                                            onClick={() => setShowUserMenu(!showUserMenu)}
-                                            className="hidden md:flex items-center gap-2 text-black hover:text-gray-600"
-                                        >
-                                            <User size={20} />
-                                            <span className="text-sm font-bold">{user.email?.split('@')[0]}</span>
-                                        </button>
-                                    ) : (
-                                        <Link href="/login" className="hidden md:block text-black hover:text-gray-600">
-                                            <User size={20} />
-                                        </Link>
-                                    )}
-
-                                    {/* User Dropdown Menu */}
-                                    {showUserMenu && user && (
-                                        <div className="absolute right-0 mt-2 w-48 bg-white border border-gray-200 shadow-lg z-50">
-                                            <div className="px-4 py-3 border-b border-gray-100">
-                                                <p className="text-sm font-bold truncate">{user.email}</p>
-                                            </div>
-                                            <button
-                                                onClick={handleSignOut}
-                                                className="w-full px-4 py-3 text-left hover:bg-gray-50 flex items-center gap-2 text-sm font-bold"
-                                            >
-                                                <LogOut size={16} />
-                                                Sign Out
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                                <button className="hidden md:block text-black hover:text-gray-600">
+                                {user ? (
+                                    <Link
+                                        href="/profile"
+                                        className="hidden md:flex items-center gap-2 text-black hover:text-gray-600 py-2"
+                                    >
+                                        <User size={20} />
+                                        <span className="text-sm font-bold">{user.email?.split('@')[0]}</span>
+                                    </Link>
+                                ) : (
+                                    <Link href="/login" className="hidden md:block text-black hover:text-gray-600 p-2">
+                                        <User size={20} />
+                                    </Link>
+                                )}
+                                <Link href="/favorites" className="hidden md:block text-black hover:text-gray-600 p-2 relative">
                                     <Heart size={20} />
-                                </button>
-                                <button className="text-black hover:text-gray-600 relative">
+                                    {favorites.length > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                            {favorites.length}
+                                        </span>
+                                    )}
+                                </Link>
+                                <Link href="/cart" className="text-black hover:text-gray-600 relative p-2">
                                     <ShoppingBag size={20} />
-                                    {/* Optional Badge */}
-                                    {/* <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold px-1 rounded-full">0</span> */}
-                                </button>
+                                    {getCartCount() > 0 && (
+                                        <span className="absolute -top-1 -right-1 bg-[#b91c1c] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                            {getCartCount()}
+                                        </span>
+                                    )}
+                                </Link>
                             </div>
                         </div>
                     </div>
+
 
                     {/* Mega Menu */}
                     <MegaMenu
@@ -181,15 +170,19 @@ export default function Navbar() {
                                     <button className="text-black flex items-center gap-2 font-bold">
                                         <User size={20} /> Account
                                     </button>
-                                    <button className="text-black flex items-center gap-2 font-bold">
+                                    <Link
+                                        href="/favorites"
+                                        className="text-black flex items-center gap-2 font-bold"
+                                        onClick={() => setIsMobileMenuOpen(false)}
+                                    >
                                         <Heart size={20} /> Wishlist
-                                    </button>
+                                    </Link>
                                 </div>
                             </div>
                         </div>
                     )}
                 </nav>
-            </header>
+            </header >
 
             <SearchOverlay
                 isOpen={isSearchOpen}

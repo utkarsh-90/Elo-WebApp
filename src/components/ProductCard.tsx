@@ -1,6 +1,9 @@
+'use client';
+
 import { Heart } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { useFavorites } from '@/context/FavoritesContext';
 
 interface ProductCardProps {
     id: string;
@@ -23,6 +26,8 @@ export default function ProductCard({
     isNew,
     isBestSeller,
 }: ProductCardProps) {
+    const { toggleFavorite, isFavorite } = useFavorites();
+
     return (
         <Link href={`/product/${id}`} className="group block relative w-full min-w-[280px] cursor-pointer">
             {/* Image Container */}
@@ -42,8 +47,17 @@ export default function ProductCard({
                 </div>
 
                 {/* Wishlist Button */}
-                <button className="absolute top-2 right-2 z-10 p-2 hover:bg-transparent transition-colors">
-                    <Heart size={20} className="text-black hover:fill-black transition-colors" />
+                <button
+                    onClick={(e) => {
+                        e.preventDefault();
+                        toggleFavorite(id);
+                    }}
+                    className="absolute top-2 right-2 z-10 p-2 hover:bg-transparent transition-colors"
+                >
+                    <Heart
+                        size={20}
+                        className={`transition-colors ${isFavorite(id) ? 'fill-black text-black' : 'text-black hover:fill-black'}`}
+                    />
                 </button>
 
                 {/* Product Image */}
