@@ -31,17 +31,20 @@ export default function ProductCard({
     return (
         <Link href={`/product/${id}`} className="group block relative w-full min-w-[280px] cursor-pointer">
             {/* Image Container */}
-            <div className="relative aspect-square bg-[#F5F5F5] mb-3 overflow-hidden">
+            <div className="relative aspect-square bg-gray-100 mb-3 overflow-hidden border-2 border-transparent group-hover:border-primary transition-colors duration-300">
+                {/* Left Accent Bar - VIBE signature */}
+                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-20"></div>
+
                 {/* Badges */}
-                <div className="absolute top-2 left-2 z-10 flex flex-col gap-1">
+                <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
                     {isNew && (
-                        <span className="bg-white text-black text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
-                            New
+                        <span className="bg-primary text-white text-[10px] font-black px-3 py-1.5 uppercase tracking-widest shadow-lg">
+                            NEW
                         </span>
                     )}
                     {isBestSeller && (
-                        <span className="bg-white text-black text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
-                            Best Seller
+                        <span className="bg-black text-white text-[10px] font-black px-3 py-1.5 uppercase tracking-widest shadow-lg">
+                            BEST SELLER
                         </span>
                     )}
                 </div>
@@ -52,11 +55,12 @@ export default function ProductCard({
                         e.preventDefault();
                         toggleFavorite(id);
                     }}
-                    className="absolute top-2 right-2 z-10 p-2 hover:bg-transparent transition-colors"
+                    className="absolute top-3 right-3 z-10 p-2 bg-white/90 backdrop-blur-sm hover:bg-primary transition-all duration-300 group/heart rounded-sm shadow-lg"
                 >
                     <Heart
-                        size={20}
-                        className={`transition-colors ${isFavorite(id) ? 'fill-black text-black' : 'text-black hover:fill-black'}`}
+                        size={18}
+                        strokeWidth={2.5}
+                        className={`transition-colors ${isFavorite(id) ? 'fill-primary text-primary' : 'text-foreground group-hover/heart:text-white'}`}
                     />
                 </button>
 
@@ -66,32 +70,40 @@ export default function ProductCard({
                         src={image}
                         alt={name}
                         fill
-                        className="object-cover object-center mix-blend-multiply group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover object-center group-hover:scale-105 transition-transform duration-500"
                         sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     />
                 </div>
-
-                {/* Price Overlay on Image (Adidas style sometimes does this, but we'll stick to below for clarity based on the screenshot provided earlier which had price below) */}
             </div>
 
             {/* Product Info */}
-            <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2">
-                    <span className={`font-medium ${originalPrice ? 'text-[#b91c1c]' : 'text-black'}`}>
+            <div className="flex flex-col gap-0.5">
+                {/* Category - Small eyebrow */}
+                <p className="text-xs text-primary font-extrabold uppercase tracking-wider mb-1">
+                    {category}
+                </p>
+
+                {/* Product Name */}
+                <h3 className="text-sm font-bold text-foreground leading-tight mb-2 group-hover:text-primary transition-colors">
+                    {name}
+                </h3>
+
+                {/* Price Section */}
+                <div className="flex items-baseline gap-2">
+                    <span className={`text-base font-black ${originalPrice ? 'text-accent' : 'text-foreground'}`}>
                         ${price}
                     </span>
                     {originalPrice && (
-                        <span className="text-xs text-gray-500">
-                            ${originalPrice} Original price <span className="text-[#b91c1c] ml-1">-{Math.round(((originalPrice - price) / originalPrice) * 100)}%</span>
-                        </span>
+                        <>
+                            <span className="text-xs text-gray-400 line-through font-medium">
+                                ${originalPrice}
+                            </span>
+                            <span className="text-xs text-accent font-black">
+                                -{Math.round(((originalPrice - price) / originalPrice) * 100)}%
+                            </span>
+                        </>
                     )}
                 </div>
-                <h3 className="text-sm text-black font-normal leading-tight group-hover:underline decoration-1 underline-offset-2">
-                    {name}
-                </h3>
-                <p className="text-sm text-gray-500 font-normal">
-                    {category}
-                </p>
             </div>
         </Link>
     );

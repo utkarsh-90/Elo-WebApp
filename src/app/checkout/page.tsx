@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 import { useSearchParams, useRouter } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
@@ -16,10 +16,32 @@ import { useCart } from '@/context/CartContext';
 export default function CheckoutPage() {
     const searchParams = useSearchParams();
     const router = useRouter();
+
+    // ALL HOOKS MUST BE CALLED FIRST - Before any conditional returns
+    const [shippingMethod, setShippingMethod] = useState('standard');
+    const [paymentMethod, setPaymentMethod] = useState('card');
+
     const productId = searchParams.get('id');
     const size = searchParams.get('size');
 
     const { cartItems, getCartCount } = useCart();
+    const { products: ALL_PRODUCTS, loading, error } = useProducts();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <p className="text-red-500">Error loading products: {error}</p>
+            </div>
+        );
+    }
 
     // Determine items to checkout: either from query params (Buy Now) or Cart
     let checkoutItems: any[] = [];
@@ -45,9 +67,6 @@ export default function CheckoutPage() {
             } : null;
         }).filter(Boolean);
     }
-
-    const [shippingMethod, setShippingMethod] = useState('standard');
-    const [paymentMethod, setPaymentMethod] = useState('card');
 
     if (checkoutItems.length === 0) {
         return (

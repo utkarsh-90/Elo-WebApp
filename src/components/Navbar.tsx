@@ -54,7 +54,7 @@ export default function Navbar() {
         <>
             <header className="sticky top-0 z-50 w-full">
                 {/* Top Strip */}
-                <div className="bg-black text-white text-xs font-bold py-2 text-center tracking-widest">
+                <div className="bg-gradient-to-r from-primary to-blue-600 text-white text-xs font-bold py-2 text-center tracking-widest">
                     FREE SHIPPING ON ORDERS OVER $100
                 </div>
 
@@ -74,65 +74,95 @@ export default function Navbar() {
 
                             {/* Logo */}
                             <div className="flex-shrink-0 flex items-center justify-center md:justify-start w-full md:w-auto absolute md:static left-0 pointer-events-none md:pointer-events-auto">
-                                <Link href="/" className="text-2xl font-black tracking-tighter pointer-events-auto">
-                                    ELO
+                                <Link href="/" className="text-2xl font-black tracking-tighter pointer-events-auto hover:text-primary transition-colors">
+                                    VIBE
                                 </Link>
                             </div>
 
                             {/* Desktop Links */}
-                            <div className="hidden md:flex space-x-8 items-center justify-center flex-1 h-full">
-                                {['NEW & TRENDING', 'MEN', 'WOMEN', 'KIDS', 'SALE'].map((item) => (
+                            <div className="hidden md:flex space-x-6 items-center justify-center flex-1 h-full">
+                                {[
+                                    { label: 'NEW & TRENDING', href: '/new-arrivals' },
+                                    { label: 'MEN', href: '/men' },
+                                    { label: 'WOMEN', href: '/women' },
+                                    { label: 'KIDS', href: '/kids' },
+                                    { label: 'SALE', href: '/sale', accent: true }
+                                ].map((item) => (
                                     <div
-                                        key={item}
-                                        className="h-full flex items-center"
-                                        onMouseEnter={() => handleMouseEnter(item)}
+                                        key={item.label}
+                                        className="h-full flex items-center relative group"
+                                        onMouseEnter={() => handleMouseEnter(item.label)}
                                         onMouseLeave={handleMouseLeave}
                                     >
                                         <Link
-                                            href={item === 'NEW & TRENDING' ? '/new-arrivals' : `/${item.toLowerCase()}`}
-                                            className={`text-sm font-bold tracking-wide h-full flex items-center border-b-4 border-transparent transition-colors ${activeCategory === item ? 'border-black' : 'hover:border-black'
-                                                } ${item === 'SALE' ? 'text-red-600' : 'text-black'}`}
+                                            href={item.href}
+                                            className={`text-xs font-extrabold uppercase tracking-widest px-3 py-2 relative transition-all duration-200 ${activeCategory === item.label
+                                                ? 'text-primary'
+                                                : item.accent
+                                                    ? 'text-accent'
+                                                    : 'text-foreground hover:text-primary'
+                                                }`}
                                         >
-                                            {item}
+                                            {/* Left accent bar */}
+                                            <span className={`absolute left-0 top-1/2 -translate-y-1/2 h-4 w-0.5 transition-all duration-200 ${activeCategory === item.label
+                                                ? 'bg-primary'
+                                                : 'bg-transparent group-hover:bg-primary'
+                                                }`} />
+                                            {item.label}
                                         </Link>
                                     </div>
                                 ))}
                             </div>
 
                             {/* Icons */}
-                            {/* Icons */}
-                            <div className="flex items-center gap-4 md:gap-6">
+                            <div className="flex items-center gap-2">
+                                {/* Search */}
                                 <button
                                     onClick={() => setIsSearchOpen(true)}
-                                    className="text-black hover:text-gray-600 p-2"
+                                    className="p-2.5 hover:bg-primary/10 transition-colors group rounded-sm"
                                 >
-                                    <Search size={20} />
+                                    <Search size={22} className="text-foreground group-hover:text-primary transition-colors" strokeWidth={2.5} />
                                 </button>
+
+                                {/* User/Profile */}
                                 {user ? (
                                     <Link
                                         href="/profile"
-                                        className="hidden md:flex items-center gap-2 text-black hover:text-gray-600 py-2"
+                                        className="hidden md:flex items-center gap-2 px-3 py-2 hover:bg-primary/10 transition-colors group rounded-sm"
                                     >
-                                        <User size={20} />
-                                        <span className="text-sm font-bold">{user.email?.split('@')[0]}</span>
+                                        <User size={22} className="text-foreground group-hover:text-primary transition-colors" strokeWidth={2.5} />
+                                        <span className="text-xs font-extrabold uppercase tracking-wider group-hover:text-primary transition-colors">{user.email?.split('@')[0]}</span>
                                     </Link>
                                 ) : (
-                                    <Link href="/login" className="hidden md:block text-black hover:text-gray-600 p-2">
-                                        <User size={20} />
+                                    <Link
+                                        href="/login"
+                                        className="hidden md:block p-2.5 hover:bg-primary/10 transition-colors group rounded-sm"
+                                    >
+                                        <User size={22} className="text-foreground group-hover:text-primary transition-colors" strokeWidth={2.5} />
                                     </Link>
                                 )}
-                                <Link href="/favorites" className="hidden md:block text-black hover:text-gray-600 p-2 relative">
-                                    <Heart size={20} />
+
+                                {/* Favorites */}
+                                <Link
+                                    href="/favorites"
+                                    className="hidden md:block p-2.5 hover:bg-primary/10 transition-colors group relative rounded-sm"
+                                >
+                                    <Heart size={22} className="text-foreground group-hover:text-primary transition-colors" strokeWidth={2.5} />
                                     {favorites.length > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-black text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                        <span className="absolute -top-0.5 -right-0.5 bg-primary text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-sm shadow-lg">
                                             {favorites.length}
                                         </span>
                                     )}
                                 </Link>
-                                <Link href="/cart" className="text-black hover:text-gray-600 relative p-2">
-                                    <ShoppingBag size={20} />
+
+                                {/* Cart */}
+                                <Link
+                                    href="/cart"
+                                    className="p-2.5 hover:bg-primary/10 transition-colors group relative rounded-sm"
+                                >
+                                    <ShoppingBag size={22} className="text-foreground group-hover:text-primary transition-colors" strokeWidth={2.5} />
                                     {getCartCount() > 0 && (
-                                        <span className="absolute -top-1 -right-1 bg-[#b91c1c] text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                                        <span className="absolute -top-0.5 -right-0.5 bg-accent text-white text-[10px] font-black w-5 h-5 flex items-center justify-center rounded-sm shadow-lg">
                                             {getCartCount()}
                                         </span>
                                     )}

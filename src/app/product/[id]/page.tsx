@@ -1,9 +1,9 @@
 'use client';
 
 import { useParams, useRouter } from 'next/navigation';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import Image from 'next/image';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Heart, Star, ChevronDown, Minus, Plus, Share2 } from 'lucide-react';
 import ProductCard from '@/components/ProductCard';
 import {
@@ -22,11 +22,31 @@ export default function ProductPage() {
     const params = useParams();
     const router = useRouter();
     const id = params.id as string;
-    const product = ALL_PRODUCTS.find((p) => p.id === id);
+
+    // Data Fetching
+    const { products, loading, error } = useProducts();
+    const product = products.find((p) => p.id === id);
+
     const [selectedSize, setSelectedSize] = useState<string | null>(null);
     const [quantity, setQuantity] = useState(1);
     const { toggleFavorite, isFavorite } = useFavorites();
     const { addToCart } = useCart();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <p className="text-red-500">Error loading product: {error}</p>
+            </div>
+        );
+    }
 
     if (!product) {
         return (
@@ -37,7 +57,8 @@ export default function ProductPage() {
     }
 
     // Mock related products (same category or random)
-    const relatedProducts = ALL_PRODUCTS
+    // Mock related products (same category or random)
+    const relatedProducts = products
         .filter(p => p.category === product.category && p.id !== product.id)
         .slice(0, 4);
 

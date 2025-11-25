@@ -42,7 +42,10 @@ export default function CategoryGrid() {
                     {CATEGORIES.map((category) => (
                         <div key={category.id} className="flex flex-col group cursor-pointer h-full">
                             {/* Image Container */}
-                            <div className="relative aspect-[3/4] w-full overflow-hidden mb-6 bg-gray-100">
+                            <div className="relative aspect-[3/4] w-full overflow-hidden mb-5 bg-gray-100 border-2 border-transparent group-hover:border-primary transition-colors duration-300">
+                                {/* Left Accent Bar */}
+                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-primary opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"></div>
+
                                 <Image
                                     src={category.image}
                                     alt={category.title}
@@ -53,15 +56,27 @@ export default function CategoryGrid() {
 
                             {/* Content */}
                             <div className="flex flex-col items-start flex-1">
-                                <h3 className="text-lg font-bold uppercase tracking-tight leading-tight mb-2">
+                                {/* Eyebrow */}
+                                <div className="flex items-center gap-2 mb-2">
+                                    <div className="h-0.5 w-6 bg-primary"></div>
+                                    <span className="text-primary text-[10px] font-extrabold uppercase tracking-[0.2em]">Featured</span>
+                                </div>
+
+                                {/* Title */}
+                                <h3 className="text-base font-black uppercase tracking-tight leading-tight mb-3 group-hover:text-primary transition-colors">
                                     {category.title}
                                 </h3>
-                                <p className="text-sm text-gray-700 leading-relaxed mb-4 flex-1">
+
+                                {/* Description */}
+                                <p className="text-sm text-gray-600 leading-snug mb-5 flex-1">
                                     {category.description}
                                 </p>
+
+                                {/* CTA Button */}
                                 <Link
                                     href={category.link}
-                                    className="inline-block text-sm font-bold uppercase tracking-wider border-b border-black py-1 px-2 hover:bg-black hover:text-white hover:border-black transition-colors"
+                                    className="inline-flex items-center gap-2 bg-primary text-white px-6 py-2.5 text-xs font-black uppercase tracking-wider hover:bg-blue-700 transition-all duration-300 shadow-md hover:shadow-lg"
+                                    style={{ borderRadius: '30px' }}
                                 >
                                     Shop Now
                                 </Link>

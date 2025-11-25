@@ -1,15 +1,32 @@
 'use client';
 
 import { useFavorites } from '@/context/FavoritesContext';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import ProductCard from '@/components/ProductCard';
 import Link from 'next/link';
 import { Heart } from 'lucide-react';
 
 export default function FavoritesPage() {
     const { favorites } = useFavorites();
+    const { products, loading, error } = useProducts();
 
-    const favoriteProducts = ALL_PRODUCTS.filter(product => favorites.includes(product.id));
+    const favoriteProducts = products.filter(product => favorites.includes(product.id));
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <p className="text-red-500">Error loading products: {error}</p>
+            </div>
+        );
+    }
 
     return (
         <div className="min-h-screen bg-white pt-20 pb-20">

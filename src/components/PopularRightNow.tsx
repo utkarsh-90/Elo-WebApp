@@ -1,20 +1,29 @@
 'use client';
 
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import ProductCard from './ProductCard';
 
-// Filter for "popular" products (e.g., best sellers or specific IDs)
-// For now, we'll take a mix of products to show variety
-const POPULAR_PRODUCTS = ALL_PRODUCTS.filter(p => p.isBestSeller || p.price > 100).slice(0, 4);
-
 export default function PopularRightNow() {
+    const { products, loading, error } = useProducts();
+
+    // Filter for "popular" products (e.g., best sellers or specific IDs)
+    const POPULAR_PRODUCTS = products.filter(p => p.isBestSeller || p.price > 100).slice(0, 4);
+
+    if (loading) return null; // Or a skeleton loader
+    if (error) return null;
     return (
         <section className="w-full py-12 md:py-20 bg-white">
             <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
                 {/* Header */}
-                <div className="mb-8">
-                    <h2 className="text-3xl md:text-4xl font-black text-black tracking-tighter">
-                        Popular right now
+                <div className="mb-10">
+                    {/* Eyebrow */}
+                    <div className="flex items-center gap-2 mb-3">
+                        <div className="h-0.5 w-10 bg-primary"></div>
+                        <span className="text-primary text-xs font-extrabold uppercase tracking-[0.25em]">Shop Now</span>
+                    </div>
+                    {/* Main heading */}
+                    <h2 className="text-5xl md:text-6xl font-black uppercase tracking-tight text-primary">
+                        POPULAR RIGHT NOW
                     </h2>
                 </div>
 

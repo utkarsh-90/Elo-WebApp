@@ -4,7 +4,7 @@ import { useState, useEffect, useRef } from 'react';
 import { X, ArrowRight, Search } from 'lucide-react';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 
 interface SearchOverlayProps {
     isOpen: boolean;
@@ -14,6 +14,7 @@ interface SearchOverlayProps {
 export default function SearchOverlay({ isOpen, onClose }: SearchOverlayProps) {
     const [query, setQuery] = useState('');
     const inputRef = useRef<HTMLInputElement>(null);
+    const { products: ALL_PRODUCTS, loading, error } = useProducts();
 
     // Auto-focus input when opened
     useEffect(() => {

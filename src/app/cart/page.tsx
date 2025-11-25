@@ -1,7 +1,7 @@
 'use client';
 
 import { useCart } from '@/context/CartContext';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import Image from 'next/image';
 import Link from 'next/link';
 import { Trash2, Minus, Plus, ShoppingBag } from 'lucide-react';
@@ -9,6 +9,23 @@ import { Separator } from '@/components/ui/separator';
 
 export default function CartPage() {
     const { cartItems, removeFromCart, updateQuantity, getCartCount } = useCart();
+    const { products: ALL_PRODUCTS, loading, error } = useProducts();
+
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <p className="text-red-500">Error loading products: {error}</p>
+            </div>
+        );
+    }
 
     // Enrich cart items with product details
     const enrichedCartItems = cartItems.map(item => {

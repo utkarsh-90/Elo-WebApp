@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useMemo } from 'react';
-import { ALL_PRODUCTS } from '@/lib/data';
+import { useProducts } from '@/hooks/useProducts';
 import ProductCard from './ProductCard';
 import { SlidersHorizontal, X } from 'lucide-react';
 import {
@@ -19,27 +19,42 @@ import { Label } from "@/components/ui/label";
 
 interface CategoryPageProps {
     title: string;
-    gender: 'Men' | 'Women' | 'Kids';
+    gender?: 'Men' | 'Women' | 'Kids';
+    filterMode?: 'gender' | 'sale' | 'new' | 'trending';
     description?: string;
 }
 
-export default function CategoryPage({ title, gender, description }: CategoryPageProps) {
+export default function CategoryPage({ title, gender, filterMode = 'gender', description }: CategoryPageProps) {
+    // Data Fetching
+    const { products: ALL_PRODUCTS, loading, error } = useProducts();
+
     // State
     const [sortOption, setSortOption] = useState('newest');
     const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
     const [priceRange, setPriceRange] = useState('all');
 
-    // Get unique categories from products
+    // Get unique categories from products - MUST be before early returns
     const allCategories = useMemo(() => {
         const categories = new Set(ALL_PRODUCTS.map(p => p.category));
         return Array.from(categories);
-    }, []);
+    }, [ALL_PRODUCTS]);
 
-    // Filter and Sort Logic
+    // Filter and Sort Logic - MUST be before early returns
     const filteredProducts = useMemo(() => {
-        let result = ALL_PRODUCTS.filter(
-            (product) => product.gender === gender || product.gender === 'Unisex'
-        );
+        let result = [...ALL_PRODUCTS];
+
+        // Apply filterMode
+        if (filterMode === 'gender' && gender) {
+            result = result.filter(
+                (product) => product.gender === gender || product.gender === 'Unisex'
+            );
+        } else if (filterMode === 'sale') {
+            result = result.filter(product => product.originalPrice !== null && product.originalPrice !== undefined);
+        } else if (filterMode === 'new') {
+            result = result.filter(product => product.isNew === true);
+        } else if (filterMode === 'trending') {
+            result = result.filter(product => product.isBestSeller === true);
+        }
 
         // Filter by Category
         if (selectedCategories.length > 0) {
@@ -80,7 +95,24 @@ export default function CategoryPage({ title, gender, description }: CategoryPag
         }
 
         return result;
-    }, [gender, selectedCategories, priceRange, sortOption]);
+    }, [ALL_PRODUCTS, gender, filterMode, selectedCategories, priceRange, sortOption]);
+
+    // Loading State - AFTER all hooks
+    if (loading) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-black"></div>
+            </div>
+        );
+    }
+
+    if (error) {
+        return (
+            <div className="min-h-screen bg-white pt-24 pb-12 flex items-center justify-center">
+                <p className="text-red-500">Error loading products: {error}</p>
+            </div>
+        );
+    }
 
     const toggleCategory = (category: string) => {
         setSelectedCategories(prev =>
@@ -103,11 +135,19 @@ export default function CategoryPage({ title, gender, description }: CategoryPag
                 <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-6">
                         <div>
-                            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tighter italic mb-2">
+                            {/* Eyebrow Label */}
+                            <div className="flex items-center gap-2 mb-3">
+                                <div className="h-0.5 w-10 bg-primary"></div>
+                                <span className="text-primary text-xs font-extrabold uppercase tracking-[0.25em]">
+                                    {filterMode === 'sale' ? 'Limited Time' : filterMode === 'new' ? 'Latest Drops' : filterMode === 'trending' ? 'Best Sellers' : 'Collection'}
+                                </span>
+                            </div>
+                            {/* Main Heading */}
+                            <h1 className="text-5xl md:text-7xl font-black uppercase tracking-tight mb-2 text-primary">
                                 {title}
                             </h1>
                             {description && (
-                                <p className="text-gray-600 max-w-xl text-lg">
+                                <p className="text-gray-600 max-w-xl text-base">
                                     {description}
                                 </p>
                             )}

@@ -60,21 +60,28 @@ const FOOTER_LINKS = {
 
 export default function Footer() {
     return (
-        <footer className="bg-black text-white pt-16 pb-8">
-            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8">
+        <footer className="bg-gradient-to-br from-slate-900 via-blue-950 to-slate-900 text-white pt-16 pb-8">
+            {/* Blue accent strip at top */}
+            <div className="w-full h-1 bg-gradient-to-r from-primary via-blue-400 to-primary"></div>
+
+            <div className="max-w-[1920px] mx-auto px-4 sm:px-6 lg:px-8 pt-12">
                 {/* Main Grid */}
                 <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-16">
                     {Object.values(FOOTER_LINKS).map((section) => (
-                        <div key={section.title}>
-                            <h3 className="font-bold text-lg mb-4 uppercase tracking-wide">
-                                {section.title}
-                            </h3>
-                            <ul className="space-y-2">
+                        <div key={section.title} className="relative">
+                            {/* Section heading with left accent */}
+                            <div className="flex items-center gap-2 mb-4">
+                                <div className="h-4 w-0.5 bg-primary"></div>
+                                <h3 className="font-black text-sm uppercase tracking-widest">
+                                    {section.title}
+                                </h3>
+                            </div>
+                            <ul className="space-y-2.5">
                                 {section.links.map((link) => (
                                     <li key={link.label}>
                                         <Link
                                             href={link.href}
-                                            className="text-sm text-gray-300 hover:text-white hover:underline transition-colors"
+                                            className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-block"
                                         >
                                             {link.label}
                                         </Link>
@@ -86,56 +93,56 @@ export default function Footer() {
 
                     {/* Follow Us Section */}
                     <div>
-                        <h3 className="font-bold text-lg mb-4 uppercase tracking-wide">
-                            FOLLOW US
-                        </h3>
-                        <div className="flex flex-col gap-4">
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                <Instagram size={24} />
-                            </Link>
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                {/* TikTok Icon (Custom SVG) */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
-                                </svg>
-                            </Link>
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                {/* X (Twitter) Icon (Custom SVG) */}
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="24"
-                                    height="24"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
-                                    <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
-                                </svg>
-                            </Link>
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                <Facebook size={24} />
-                            </Link>
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                <Youtube size={24} />
-                            </Link>
-                            <Link href="#" className="hover:text-gray-300 transition-colors">
-                                <Linkedin size={24} />
-                            </Link>
+                        {/* Section heading with left accent */}
+                        <div className="flex items-center gap-2 mb-4">
+                            <div className="h-4 w-0.5 bg-primary"></div>
+                            <h3 className="font-black text-sm uppercase tracking-widest">
+                                FOLLOW US
+                            </h3>
                         </div>
+                        <ul className="space-y-2.5">
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <Instagram size={16} strokeWidth={2.5} />
+                                    Instagram
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <path d="M9 12a4 4 0 1 0 4 4V4a5 5 0 0 0 5 5" />
+                                    </svg>
+                                    TikTok
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                                        <path d="M4 4l11.733 16h4.267l-11.733 -16z" />
+                                        <path d="M4 20l6.768 -6.768m2.46 -2.46l6.772 -6.772" />
+                                    </svg>
+                                    X
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <Facebook size={16} strokeWidth={2.5} />
+                                    Facebook
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <Youtube size={16} strokeWidth={2.5} />
+                                    YouTube
+                                </Link>
+                            </li>
+                            <li>
+                                <Link href="#" className="text-sm text-gray-400 hover:text-primary hover:translate-x-1 transition-all inline-flex items-center gap-2">
+                                    <Linkedin size={16} strokeWidth={2.5} />
+                                    LinkedIn
+                                </Link>
+                            </li>
+                        </ul>
                     </div>
                 </div>
 
@@ -148,7 +155,10 @@ export default function Footer() {
                         <span className="hidden md:inline">|</span>
                         <Link href="#" className="hover:text-white transition-colors">Terms and Conditions</Link>
                     </div>
-                    <p>© 2025 Elo America, Inc.</p>
+                    <p>© 2025 VIBE, Inc. All rights reserved.</p>
+                    <p className="text-xs text-gray-500 mt-2">
+                        VIBE is not affiliated with or endorsed by any of the brands featured on this site.
+                    </p>
                 </div>
             </div>
         </footer>
